@@ -1,0 +1,31 @@
+version: "3"
+services:
+  mysql-dev:
+    image: mysql:latest
+    environment:
+      - MYSQL_ROOT_PASSWORD=root_password
+      - MYSQL_USER=mysql
+      - MYSQL_PASSWORD=password
+      - MYSQL_DATABASE=my_database
+    volumes:
+      - ./data:/var/lib/mysql
+    ports:
+      - "3306:3306"
+    networks:
+      - mysql-network
+  phpmyadmin-dev:
+    depends_on:
+      - mysql-dev
+    image: phpmyadmin:latest
+    environment:
+      - PMA_ARBITRARY=1
+      - PMA_HOST=mysql-dev
+      - PMA_PORT=3306
+      - PMA_PMADB=phpmyadmin
+    ports:
+      - "8003:80"
+    networks:
+      - mysql-network
+networks:
+  mysql-network:
+    driver: bridge
